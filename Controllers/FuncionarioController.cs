@@ -64,16 +64,18 @@ public class FuncionarioController : ControllerBase
 
         funcionarioBanco.Nome = funcionario.Nome;
         funcionarioBanco.Endereco = funcionario.Endereco;
-        // TODO: As propriedades estão incompletas
+        funcionarioBanco.Ramal = funcionario.Ramal;
+        funcionarioBanco.EmailProfissional = funcionario.EmailProfissional;
+        funcionarioBanco.Departamento = funcionario.Departamento;
+        funcionarioBanco.Salario = funcionario.Salario;
 
-        // TODO: Chamar o método de Update do _context.Funcionarios para salvar no Banco SQL
+        _context.Update(funcionarioBanco);
         _context.SaveChanges();
 
         var tableClient = GetTableClient();
         var funcionarioLog = new FuncionarioLog(funcionarioBanco, TipoAcao.Atualizacao, funcionarioBanco.Departamento, Guid.NewGuid().ToString());
 
-        // TODO: Chamar o método UpsertEntity para salvar no Azure Table
-
+        tableClient.UpsertEntity(funcionarioLog);
         return Ok();
     }
 
@@ -85,13 +87,13 @@ public class FuncionarioController : ControllerBase
         if (funcionarioBanco == null)
             return NotFound();
 
-        // TODO: Chamar o método de Remove do _context.Funcionarios para salvar no Banco SQL
+        _context.Remove(funcionarioBanco);
         _context.SaveChanges();
 
         var tableClient = GetTableClient();
         var funcionarioLog = new FuncionarioLog(funcionarioBanco, TipoAcao.Remocao, funcionarioBanco.Departamento, Guid.NewGuid().ToString());
 
-        // TODO: Chamar o método UpsertEntity para salvar no Azure Table
+        tableClient.UpsertEntity(funcionarioLog);
 
         return NoContent();
     }
